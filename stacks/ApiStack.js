@@ -6,14 +6,12 @@ export function ApiStack({ stack, app }) {
 
   // Create the API
   const api = new Api(stack, "Api", {
-    customDomain: app.stage === "prod" ? "notes-api.seed-demo.club" : undefined,
     defaults: {
       authorizer: "iam",
       function: {
         permissions: [table],
         environment: {
           TABLE_NAME: table.tableName,
-          STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
         },
       },
     },
@@ -23,13 +21,12 @@ export function ApiStack({ stack, app }) {
       "GET    /notes/{id}": "functions/get.main",
       "PUT    /notes/{id}": "functions/update.main",
       "DELETE /notes/{id}": "functions/delete.main",
-      "POST   /billing": "functions/billing.main",
     },
   });
 
   // Show the API endpoint in the output
   stack.addOutputs({
-    ApiEndpoint: api.customDomainUrl || api.url,
+    ApiEndpoint: api.url,
   });
 
   // Return the API resource
